@@ -92,10 +92,32 @@ class UserController
     function exist(){
 
         $userModel = new UserModel($this->email, $this->password);
-        //recup le tableau des infos de l'utilisateur
-        //user tab contient le tableau des infos du user et fetch les cherches
-        $userTab = $userModel ->fetch();
-        var_dump($userTab);
+    //recup le tableau des infos de l'utilisateur
+    //user tab contient le tableau des infos du user et fetch les cherches
+    $userTab = $userModel -> fetch();
+    var_dump($userTab);
+
+    // si le tableau est vide donc l'utilisateur n'existe pas
+    if (count($userTab) === 0) {
+        return false;
+    } else { //cas ou l'utilisateur existe bel et bien
+        //enregistrer les informations de l'utilisateur afin de créer sa session
+        $this->id = $userTab['id'];
+        $this->avatarURL = $userTab['avatarURL'];
+       
+
+        return true;
+    }
+    }
+
+        function isPasswordCorrect(){
+
+            $userModel = new UserModel($this->email, $this->password);
+            //recup le tableau des infos de l'utilisateur
+            //user tab contient le tableau des infos du user et fetch les cherches
+            $userTab = $userModel -> fetch();
+
+            return $userTab['password'] === $this->password;
 
         // si le tableau est vide donc l'utilisateur n'existe pas
         if(count($userTab) === 0)

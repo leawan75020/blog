@@ -10,7 +10,7 @@ include_once $_SERVER['DOCUMENT_ROOT']."/PHPcours/blog/controllers/UserControlle
 if(!(isset($_POST['email'], $_POST['password']))){ // si le formulaire a une erreur d'envoie
 
     //alors fermer la session et rediriger la page
-    header("Location: /login.php");
+    header("Location: ../login.php");
     die(); // instruction qui ferme la session
 }
 
@@ -21,11 +21,24 @@ $user = new UserController($_POST['email'], $_POST['password']);
 
 //verif si l'utilisateur existe sinon fermer la session
 if(!($user->exist())){
-    header("Location: ../login.php?connexion=error&passwordError=PasswordIncorrect");
-    die;
+    header("Location: ../login.php?connexion=error&emailError=EmailDoesntExist");
+    die();
 }
 
 //verif si le mdp est correct
+if(!$user -> isPasswordCorrect()){
+    header("Location: /PHPcours/blog/login.php?connexion=error&passwordError=PasswordIncorrect");
+    die();
+}
+
+//Démarrer ma session
+echo "session démarrée";
+
+$_SESSION["email"] = $user ->getEmail();
+$_SESSION["id"] = $user->getId();
+$_SESSION["avatarURL"] = $user->getAvatarURL();
+
+header('Location: /PHPcours/blog/profil.php');
 
 
 //Démarrer ma session
